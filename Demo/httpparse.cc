@@ -77,9 +77,9 @@ LINE_STATUS parse_line(char* buffer,int& checked_index,int& read_index)
     }
     //内容尚未是完整的行
     return LINE_OPEN;
-}
+}//分析请求行
 
-//分析请求行
+
 HTTP_COED parse_requestline(char* temp, CHECK_STATE& checkstate)
 {
     printf("1\n");
