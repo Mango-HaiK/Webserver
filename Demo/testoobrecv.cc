@@ -46,18 +46,18 @@ int main(int argc, char const *argv[])
         char buffer[BUFSIZE];
 
         memset(&buffer, '\0', BUFSIZE);
-        recv(connfd, &buffer, BUFSIZE - 1, 0);
-        std::cout<<"got "<< ret <<"byte of normal data "<<buffer<<std::endl;
+        ret = recv(connfd, &buffer, BUFSIZE - 1, 0);
+        std::cout<<"got "<< ret <<" byte of normal data "<<buffer<<std::endl;
 
         //在这输出的带外数据只有c显示，因为紧急标志只能只能带一个字节
 
         memset(&buffer, '\0', BUFSIZE);
-        recv(connfd, &buffer, BUFSIZE - 1, MSG_OOB);
-        std::cout<<"got "<< ret <<"byte of oob data "<<buffer<<std::endl;
+        ret = recv(connfd, &buffer, BUFSIZE - 1, MSG_OOB);
+        std::cout<<"got "<< ret <<" byte of oob data "<<buffer<<std::endl;
 
         memset(&buffer, '\0', BUFSIZE);
-        recv(connfd, &buffer, BUFSIZE - 1, 0);
-        std::cout<<"got "<< ret <<"byte of normal data "<<buffer<<std::endl;
+        ret = recv(connfd, &buffer, BUFSIZE - 1, 0);
+        std::cout<<"got "<< ret <<" byte of normal data "<<buffer<<std::endl;
         close(connfd);
     }
     close(sock);

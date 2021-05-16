@@ -1,1 +1,1 @@
-clean: rm -f *.aot
+clean: rm -r *.aot
