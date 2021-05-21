@@ -8,6 +8,10 @@
         "csignal": "cpp",
         "mutex": "cpp",
         "__mutex_base": "cpp",
-        "condition_variable": "cpp"
+        "condition_variable": "cpp",
+        "ios": "cpp",
+        "istream": "cpp",
+        "locale": "cpp",
+        "thread": "cpp"
     }
 }
