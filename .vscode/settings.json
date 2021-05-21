@@ -5,6 +5,9 @@
         "ostream": "cpp",
         "*.tcc": "cpp",
         "fstream": "cpp",
-        "csignal": "cpp"
+        "csignal": "cpp",
+        "mutex": "cpp",
+        "__mutex_base": "cpp",
+        "condition_variable": "cpp"
     }
 }

@@ -1,1 +1,1 @@
-clean: rm -r *.aot
+clean: rm *.out
