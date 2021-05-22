@@ -1,5 +1,5 @@
-#ifndef BUFFER_H
-#define BUFEER_H
+#ifndef BUFFER_H_
+#define BUFEER_H_
 
 #include <iostream>
 #include <sys/uio.h> //readv、writev
@@ -44,4 +44,4 @@ public:
 
 };
 
-#endif //BUFFER_H
+#endif //BUFFER_H_

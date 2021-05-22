@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include "../Buffer/buffer.h"
 #include "Blockdeque.h"
+
 class Log
 {
 private:
@@ -37,7 +38,7 @@ private:
     bool m_isAsync;
 
     FILE *m_fd;
-    std::unique_ptr<Blockdeque<std::string>> m_deque;   //用于写的队列
+    std::unique_ptr<Blockdeque<std::string> > m_deque;   //用于写的队列
     std::unique_ptr<std::thread> m_writeThread;         //写线程
     std::mutex m_mutex;
 
@@ -63,9 +64,14 @@ public:
             Log* log = Log::Instance();\
             if (log->IsOpen() && log->GetLevel() < level)\
             {\
-                log->write(level, format, ##__VA_ARGS__);   
-            }
+                log->write(level, format, ##__VA_ARGS__); \
+                log->flush();\
+            }\
             \
         } while(0);
 
+#define LOG_DEBUG(format, ...) do{ LOG_BASE(0, format, ##_VA_ARGS__) }while(0);
+#define LOG_INFO(format, ...) do{ LOG_BASE(1, format, ##_VA_ARGS__) }while(0);
+#define LOG_WARN(format, ...) do{ LOG_BASE(2, format, ##_VA_ARGS__) }while(0);
+#define LOG_ERROR(format, ...) do{ LOG_BASE(3, format, ##_VA_ARGS__) }while(0);
 #endif
