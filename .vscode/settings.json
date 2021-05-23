@@ -12,6 +12,7 @@
         "ios": "cpp",
         "istream": "cpp",
         "locale": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "__split_buffer": "cpp"
     }
 }

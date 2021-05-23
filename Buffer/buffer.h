@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include <sys/uio.h> //readv、writev
-#include <cstring>
+#include <cstring>  
 #include <vector>
-#include <atomic>
+#include <atomic>   //atomic
 
 class Buffer
 {

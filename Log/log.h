@@ -37,6 +37,7 @@ private:
     int m_level;
     bool m_isAsync;
 
+    Buffer m_buff;
     FILE *m_fd;
     std::unique_ptr<Blockdeque<std::string> > m_deque;   //用于写的队列
     std::unique_ptr<std::thread> m_writeThread;         //写线程
@@ -48,7 +49,9 @@ public:
                 const char* suffix = ".log",
                     size_t maxCapacity = 1024);
 
+    //返回单实例对象
     static Log* Instance();
+    //异步写线程
     static void FlushLogThread();
 
     void write(int level,const char* format,...);
