@@ -47,7 +47,7 @@ public:
     //初始化
     void Init(int level,const char* path = "./log",
                 const char* suffix = ".log",
-                    size_t maxCapacity = 1024);
+                    size_t maxDequeSize = 1024);
 
     //返回单实例对象
     static Log* Instance();

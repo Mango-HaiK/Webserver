@@ -30,15 +30,17 @@ Log::~Log()
 
 void Log::Init(int level = 1,const char* path,
                 const char* suffix,
-                size_t maxCapacity)
+                size_t maxDequeSize)
 {
     m_isOpen = true;
     m_level = level;
-    if (maxCapacity > 0)
+    //如果设置了队列大小则为异步
+    if (maxDequeSize > 0)
     {
         m_isAsync = true;
         if (!m_deque)
         {
+            //创建队列和处理线程
             std::unique_ptr<Blockdeque<std::string> > newDeque(new Blockdeque<std::string>());
             //将newDeque对内容移动到m_deque，此过程不会复制因此开销低，但之后newDeque可能为空
             m_deque = move(newDeque);
@@ -64,10 +66,56 @@ void Log::Init(int level = 1,const char* path,
 
         {
             lg_mutex locker(m_mutex);
-            m_buff
+            m_buff.RetrieveAll();
+            if (m_fd)
+            {
+                //将缓冲区对内容加入文件
+                flush();
+                fclose(m_fd);
+            }
+            
+            m_fd = fopen(fileName,"a");
+            if (m_fd == nullptr)
+            {
+                mkdir(path,0777);           //第二个参数是访问权限
+                m_fd = fopen(fileName,"a");
+            }
+            assert(m_fd != nullptr);
+        }
+    }
+}
+
+void Log::write(int level, const char* format, ...)
+{
+    timeval nowtime = {0, 0};
+    gettimeofday(&nowtime,nullptr);     //1.返回当前距离1970年的秒数和毫秒数
+    time_t tSec = nowtime.tv_sec;       //2.获取秒数
+    tm *t = localtime(&tSec);           //3.得到一个存储日期的结构体
+    
+    //不是同一天或者日志行数已经太多了,新建日志文件
+    if (m_toDay != t->tm_mday || m_lineCount % MAX_LINES)
+    {
+        std::unique_lock<std::mutex> locker(m_mutex);
+        locker.unlock();
+
+        char newFile[LOG_NAME_LEN];
+        char tail[36] = {0};
+        snprintf(tail,36,"%04d_%02d_%02d",t->tm_year + 1900,t->tm_mon,t->tm_mday);
+        
+        if(m_toDay != t->tm_mday)
+        {
+            
         }
     }
     
+
+}
+
+void Log::flush()
+{
+    if(m_isAsync)
+        m_deque->flush();
+    fflush(m_fd);
 }
 
 void Log::SetLevel(int level)

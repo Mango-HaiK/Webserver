@@ -103,7 +103,7 @@ bool Blockdeque<T>::Full()
 template <typename T>
 void Blockdeque<T>::flush()
 {
-    m_Consumer.notify_one();
+        .notify_one();
 }
 
 template <typename T>

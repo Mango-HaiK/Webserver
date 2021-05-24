@@ -2,10 +2,13 @@
 #define BUFEER_H_
 
 #include <iostream>
-#include <sys/uio.h> //readv、writev
+#include <sys/uio.h> //readv
+#include <unistd.h>  //write
 #include <cstring>  
 #include <vector>
 #include <atomic>   //atomic
+
+#define MAX_BUFF_LEN 65535
 
 class Buffer
 {
@@ -25,11 +28,20 @@ public:
     
     size_t WritableBytes() const;
     size_t ReadableBytes() const;
-    size_t PrepenableBytes() const; //前置内容
+    size_t PrepenableBytes() const;
     
     const char* Peek() const;
     void EnsureWriteble(size_t len);//保证写
     void HasWritten(size_t len);    //
+    
+    char* BeginWrite();
+    const char* BeginWriteConst() const;
+
+    //恢复
+    void Retrieve(size_t len);
+    void RetrieveUntil(const char* end);
+    void RetrieveAll();
+    std::string RetrieveToStr();
     
     //追加数据
     void Append(const std::string& str);
