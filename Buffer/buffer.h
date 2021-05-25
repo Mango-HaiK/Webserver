@@ -1,5 +1,5 @@
 #ifndef BUFFER_H_
-#define BUFEER_H_
+#define BUFFER_H_
 
 #include <iostream>
 #include <sys/uio.h> //readv
@@ -55,8 +55,6 @@ public:
     //读
     ssize_t ReadFd(int fd,int* Errno);
     ssize_t WriteFd(int fd,int* Errno);
-    
-
 };
 
-#endif //BUFFER_H_
+#endif //BUFFER_H

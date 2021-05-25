@@ -28,7 +28,6 @@ private:
     const char* m_path;
     const char* m_suffix;
 
-    int MAX_LINE;
     int m_lineCount;    //行数
     int m_toDay;        
 
@@ -59,7 +58,7 @@ public:
 
     void SetLevel(int level);
     int GetLevel();
-    bool IsOpen();
+    bool IsOpen() {return m_isOpen;};
 };
 
 #define LOG_BASE(level, format, ...)\
@@ -73,8 +72,8 @@ public:
             \
         } while(0);
 
-#define LOG_DEBUG(format, ...) do{ LOG_BASE(0, format, ##_VA_ARGS__) }while(0);
-#define LOG_INFO(format, ...) do{ LOG_BASE(1, format, ##_VA_ARGS__) }while(0);
-#define LOG_WARN(format, ...) do{ LOG_BASE(2, format, ##_VA_ARGS__) }while(0);
-#define LOG_ERROR(format, ...) do{ LOG_BASE(3, format, ##_VA_ARGS__) }while(0);
+#define LOG_DEBUG(format, ...) do{ LOG_BASE(0, format, ##__VA_ARGS__) }while(0);
+#define LOG_INFO(format, ...) do{ LOG_BASE(1, format, ##__VA_ARGS__) }while(0);
+#define LOG_WARN(format, ...) do{ LOG_BASE(2, format, ##__VA_ARGS__) }while(0);
+#define LOG_ERROR(format, ...) do{ LOG_BASE(3, format, ##__VA_ARGS__) }while(0);
 #endif

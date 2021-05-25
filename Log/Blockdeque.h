@@ -9,6 +9,7 @@
 #include <condition_variable>
 
 typedef std::lock_guard<std::mutex> lg_mutex;
+typedef std::unique_lock<std::mutex> ul_mutex;
 
 template <typename T>
 class Blockdeque
@@ -97,13 +98,13 @@ template <typename T>
 bool Blockdeque<T>::Full()
 {
     lg_mutex locker(m_mutex);
-    return m_deque.size >= m_capacity;
+    return m_deque.size() >= m_capacity;
 }
 
 template <typename T>
 void Blockdeque<T>::flush()
 {
-        .notify_one();
+    m_Consumer.notify_one();
 }
 
 template <typename T>
@@ -137,9 +138,9 @@ size_t Blockdeque<T>::capacity()
 template<typename T>
 void Blockdeque<T>::push_back(const T& item)
 {
-    lg_mutex locker(m_mutex);
+    ul_mutex locker(m_mutex);
     //如果队列超过上限值则阻塞等待
-    while (m_deque.size >= m_capacity)
+    while (m_deque.size() >= m_capacity)
     {
         m_Porducer.wait(locker);    //此时locker会自动unlock()
     }
@@ -152,7 +153,7 @@ void Blockdeque<T>::push_back(const T& item)
 template<typename T>
 void Blockdeque<T>::push_front(const T &item)
 {
-    lg_mutex locker(m_mutex);
+    ul_mutex locker(m_mutex);
     while (m_deque.size() >= m_capacity)
     {
         m_Porducer.wait(locker);
@@ -164,7 +165,7 @@ void Blockdeque<T>::push_front(const T &item)
 template<typename T>
 bool Blockdeque<T>::pop(T& item)
 {
-    lg_mutex locker(m_mutex);
+    ul_mutex locker(m_mutex);
     while (m_deque.empty())
     {
         m_Consumer.wait(locker);
@@ -182,7 +183,7 @@ bool Blockdeque<T>::pop(T& item)
 template<typename T>
 bool Blockdeque<T>::pop(T &item,int timeout)
 {
-    lg_mutex locker(m_mutex);
+    ul_mutex locker(m_mutex);
     while (m_deque.empty())
     {
         int ret = m_Consumer.wait_for(locker,

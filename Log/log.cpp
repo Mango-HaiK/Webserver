@@ -1,9 +1,9 @@
-
 #include "log.h"
 
 Log::Log():m_lineCount(0),m_toDay(0),
             m_isOpen(false),m_isAsync(false),
-            m_deque(nullptr),m_writeThread(nullptr)            
+            m_deque(nullptr),m_writeThread(nullptr),
+            m_fd(nullptr)         
 {
 
 }
@@ -198,3 +198,4 @@ void Log::FlushLogThread()
 {
     Log::Instance()->__AsyncWrite();
 }
+
