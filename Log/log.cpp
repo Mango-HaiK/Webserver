@@ -2,8 +2,8 @@
 
 Log::Log():m_lineCount(0),m_toDay(0),
             m_isOpen(false),m_isAsync(false),
-            m_deque(nullptr),m_writeThread(nullptr),
-            m_fd(nullptr)         
+            m_fd(nullptr), m_deque(nullptr),
+            m_writeThread(nullptr)
 {
 
 }
@@ -23,7 +23,7 @@ Log::~Log()
     if (m_fd)
     {
         lg_mutex locker(m_mutex);
-        flush();        //TODO
+        flush();        
         fclose(m_fd);
     }
 }
@@ -31,7 +31,7 @@ Log::~Log()
 void Log::Init(int level = 1,const char* path,
                 const char* suffix,
                 size_t maxDequeSize)
-{
+{   
     m_isOpen = true;
     m_level = level;
     //如果设置了队列大小则为异步
@@ -61,7 +61,7 @@ void Log::Init(int level = 1,const char* path,
         //格式化日志文件名
         char fileName[LOG_NAME_LEN] = {0};
         snprintf(fileName,LOG_NAME_LEN - 1,"%s/%04d_%02d_%02d%s",
-                    fileName,t->tm_year,t->tm_mon,t->tm_mday,m_suffix);
+                    m_path,t->tm_year + 1900,t->tm_mon + 1,t->tm_mday,m_suffix);
         m_toDay = t->tm_mday;
 
         {
@@ -69,7 +69,7 @@ void Log::Init(int level = 1,const char* path,
             m_buff.RetrieveAll();
             if (m_fd)
             {
-                //将缓冲区对内容加入文件
+                //将缓冲区的内容加入文件
                 flush();
                 fclose(m_fd);
             }
@@ -93,7 +93,7 @@ void Log::write(int level, const char* format, ...)
     tm *t = localtime(&tSec);           //3.得到一个存储日期的结构体
     va_list va_List;
     //不是同一天或者日志行数已经太多了,新建日志文件
-    if (m_toDay != t->tm_mday || m_lineCount % MAX_LINES)
+    if (m_toDay != t->tm_mday || m_lineCount > MAX_LINES)
     {
         std::unique_lock<std::mutex> locker(m_mutex);
         locker.unlock();
@@ -101,7 +101,7 @@ void Log::write(int level, const char* format, ...)
         //设置日期
         char newFile[LOG_NAME_LEN];
         char tail[36] = {0};
-        snprintf(tail,36,"%04d_%02d_%02d",t->tm_year + 1900,t->tm_mon,t->tm_mday);
+        snprintf(tail,36,"%04d_%02d_%02d",t->tm_year + 1900,t->tm_mon + 1,t->tm_mday);
         
         //如果是不是同一天
         if(m_toDay != t->tm_mday)
