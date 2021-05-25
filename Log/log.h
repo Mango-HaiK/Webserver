@@ -18,17 +18,17 @@ class Log
 private:
     Log();  //单例私有化构造函数
     ~Log();
-    void __AppendLogLevelTitle();
+    void __AppendLogLevelTitle(int level);
     void __AsyncWrite();
 
-    static const int LOG_PATH_LEN = 256;   //日志长度
-    static const int LOG_NAME_LEN = 256;    //文件名长度
-    static const int MAX_LINE = 50000;      //最大行数
+    static const int LOG_PATH_LEN = 256;   //日志路径长度
+    static const int LOG_NAME_LEN = 256;    //文件名长度    
+    static const int MAX_LINES = 50000;      //最大行数
 
     const char* m_path;
     const char* m_suffix;
 
-    int MAX_LINES;
+    int MAX_LINE;
     int m_lineCount;    //行数
     int m_toDay;        
 

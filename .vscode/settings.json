@@ -13,6 +13,11 @@
         "istream": "cpp",
         "locale": "cpp",
         "thread": "cpp",
-        "__split_buffer": "cpp"
+        "__split_buffer": "cpp",
+        "array": "cpp",
+        "iterator": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "vector": "cpp"
     }
 }

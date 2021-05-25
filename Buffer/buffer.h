@@ -30,9 +30,11 @@ public:
     size_t ReadableBytes() const;
     size_t PrepenableBytes() const;
     
+    //获取当前buff里的内容
     const char* Peek() const;
     void EnsureWriteble(size_t len);//保证写
     void HasWritten(size_t len);    //
+    
     
     char* BeginWrite();
     const char* BeginWriteConst() const;
@@ -41,6 +43,7 @@ public:
     void Retrieve(size_t len);
     void RetrieveUntil(const char* end);
     void RetrieveAll();
+    //返回字符串类型的内容，并重置buff的内容
     std::string RetrieveToStr();
     
     //追加数据

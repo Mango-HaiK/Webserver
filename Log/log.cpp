@@ -91,24 +91,72 @@ void Log::write(int level, const char* format, ...)
     gettimeofday(&nowtime,nullptr);     //1.返回当前距离1970年的秒数和毫秒数
     time_t tSec = nowtime.tv_sec;       //2.获取秒数
     tm *t = localtime(&tSec);           //3.得到一个存储日期的结构体
-    
+    va_list va_List;
     //不是同一天或者日志行数已经太多了,新建日志文件
     if (m_toDay != t->tm_mday || m_lineCount % MAX_LINES)
     {
         std::unique_lock<std::mutex> locker(m_mutex);
         locker.unlock();
 
+        //设置日期
         char newFile[LOG_NAME_LEN];
         char tail[36] = {0};
         snprintf(tail,36,"%04d_%02d_%02d",t->tm_year + 1900,t->tm_mon,t->tm_mday);
         
+        //如果是不是同一天
         if(m_toDay != t->tm_mday)
         {
-            
+            snprintf(newFile, LOG_NAME_LEN - 72,"%s/%s%s", m_path, tail, m_suffix);
+            m_toDay = t->tm_mday;
+            m_lineCount = 0;
+        }else   //当天的行数已满
+        {
+            snprintf(newFile, LOG_NAME_LEN - 72,"%s/%s_%d%s",
+                         m_path, tail, (m_lineCount / MAX_LINES), m_suffix);
         }
+        locker.lock();
+        flush();
+        fclose(m_fd);
+        m_fd = fopen(newFile,"a");
+        assert(m_fd != nullptr);
     }
     
+    //写日志事件
+    std::unique_lock<std::mutex> locker(m_mutex);
+    m_lineCount++;
+    int n = snprintf(m_buff.BeginWrite(), 128,"%d-%02d-%02d %02d:%02d:%02d.%06d",
+                        t->tm_yday + 1990, t->tm_mon + 1, t->tm_mday, t->tm_hour, 
+                        t->tm_min, t->tm_sec, nowtime.tv_usec);
+    m_buff.HasWritten(n);
+    __AppendLogLevelTitle(level);
 
+    va_start(va_List,format);
+    int m = vsnprintf(m_buff.BeginWrite(),m_buff.WritableBytes(),format,va_List);
+    va_end(va_List);
+
+    m_buff.HasWritten(m);
+    m_buff.Append("\n\0",2);
+    
+    if(m_isAsync && m_deque && !m_deque->Full())
+    {
+        m_deque->push_back(m_buff.RetrieveToStr());
+    }
+    else
+    {
+        fputs(m_buff.Peek(),m_fd);
+    }
+    m_buff.RetrieveAll();
+}
+
+void Log::__AppendLogLevelTitle(int level)
+{
+    const char* info[4]=
+    {
+        "[debug]: ","[info]: ","[warn]: ",
+        "[error]: "
+    };
+    if (level >= 4) level = 1;
+    m_buff.Append(info[level],9);
 }
 
 void Log::flush()
