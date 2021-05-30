@@ -10,6 +10,7 @@
 #include <stdarg.h>
 #include <sys/time.h>
 #include <sys/stat.h>
+#include <assert.h>
 #include "../Buffer/buffer.h"
 #include "Blockdeque.h"
 
@@ -33,8 +34,8 @@ private:
 
     bool m_isOpen;
 
-    int m_level;
-    bool m_isAsync;
+    int m_level;        //日志等级
+    bool m_isAsync;     
 
     Buffer m_buff;
     FILE *m_fd;

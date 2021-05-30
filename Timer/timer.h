@@ -4,13 +4,14 @@
 #include <functional>   //function
 #include <chrono>
 #include <vector>
+#include <assert.h>
 #include <unordered_map>
 
 typedef std::function<void()> TimeCallBackFunc;
 typedef std::chrono::high_resolution_clock Clock;
 typedef Clock::time_point TimeStamp;                
 
-/*定时器*/
+/*定时器*/
 struct TimerNode
 {
     int id;
@@ -35,8 +36,6 @@ public:
     //添加定时器-设置超时时间和超时后的所需要执行的回调函数
     void add(int id, int timeout, const TimeCallBackFunc& cbfunc);
 
-    
-
     //调整堆
     void adjust(int id, int newExpires);
 
@@ -49,10 +48,10 @@ private:
     void __shiftup(size_t id);
 
     //向下调整
-    void __shiftdown(size_t index,int id);
+    bool __shiftdown(size_t index,size_t n);
 
     //交换结点
-    void __swapNode(size_t id1,size_t id2);
+    void __swapNode(size_t,size_t);
 
     std::vector<TimerNode> m_heap;  //存放定时器结点的堆
     
