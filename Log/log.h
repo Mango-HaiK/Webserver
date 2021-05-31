@@ -51,6 +51,7 @@ public:
 
     //返回单实例对象
     static Log* Instance();
+    
     //异步写线程
     static void FlushLogThread();
 

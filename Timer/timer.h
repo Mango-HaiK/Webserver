@@ -45,7 +45,7 @@ public:
     void adjust(int id, int newExpires);
 
     int getNextTick();
-    
+
     void pop();
 
     void clear();
@@ -67,9 +67,7 @@ private:
     std::vector<TimerNode> m_heap;  //存放定时器结点的堆
     
     std::unordered_map<int ,size_t> m_ref;
-    
 };
-
 
 
 #endif
