@@ -1,3 +1,6 @@
+#ifndef SQLCONNPOOL_H_
+#define SQLCONNPOOL_H_
+
 #include <queue>
 #include <mutex>
 #include <assert.h>
@@ -40,3 +43,5 @@ private:
     std::mutex m_mutex;   
     sem_t m_sem;                   //管理队列信号量    
 };
+
+#endif  //SQLCONNPOOL_H_
