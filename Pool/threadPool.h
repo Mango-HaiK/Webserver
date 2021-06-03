@@ -41,7 +41,7 @@ public:
         }
     }
 
-    ThreadPool::~ThreadPool()
+    ~ThreadPool()
     {
         //m_pool肯定是存在的，但是未必有数据
         if (static_cast<bool> (m_pool))
@@ -56,10 +56,10 @@ public:
     }
 
     template<typename F>
-    void ThreadPool::AddTask(F&& task)
+    void AddTask(F&& task)
     {
         {
-        std::lock_guard<std::mutex> locker(m_mutex);
+        std::lock_guard<std::mutex> locker(m_pool->mutex);
         m_pool->tasks.emplace(std::forward<F>(task));
         }
         m_pool->cv.notify_one();
