@@ -59,6 +59,8 @@
         "cfenv": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "__config": "cpp",
+        "__nullptr": "cpp"
     }
 }

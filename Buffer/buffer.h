@@ -26,16 +26,20 @@ public:
     Buffer(int initBufferSize = 1024);
     ~Buffer() = default;
     
+    //可写字节数
     size_t WritableBytes() const;
+    //可读字节数
     size_t ReadableBytes() const;
     size_t PrepenableBytes() const;
     
     //获取当前buff里的内容
     const char* Peek() const;
-    void EnsureWriteble(size_t len);//保证写
+    //确保有位置存放要写入的数据
+    void EnsureWriteble(size_t len);
+    
     void HasWritten(size_t len);    //
     
-    
+    //追加的位置，也是前段数据的结尾处+1
     char* BeginWrite();
     const char* BeginWriteConst() const;
 
