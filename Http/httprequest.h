@@ -22,12 +22,23 @@ public:
     HttpRequest();
     ~HttpRequest() = default;
     
-    //匹配相应头 - 主状态机
+    //主状态机
     bool Parse(Buffer&);
 
     void Init();
 
+    std::string path() const;
+    std::string& path();
+    std::string method() const;
+    std::string& method();
+    std::string version() const;
+    std::string GetPost(const std::string&) const;
+    std::string GetPost(const char*) const;
+    
+    /*长连接返回true*/
+    bool IsKeepAlive() const;
 private:
+    /*从状态机*/
     /*匹配请求行*/
     bool __ParseRequestLine(const std::string& line);
     /*匹配请求头*/
@@ -52,6 +63,10 @@ private:
     static const std::unordered_set<std::string> DEFAULT_HTML;
     static const std::unordered_map<std::string, int> DEFAULT_HTML_TAG;
     
+    /*验证用户信息*/
+    static bool UserVerify(const std::string&, const std::string&, bool);
+
+    static int ConverHex(char);
 };
 
 #endif
