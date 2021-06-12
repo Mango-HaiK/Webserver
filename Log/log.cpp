@@ -152,7 +152,7 @@ void Log::__AppendLogLevelTitle(int level)
 {
     const char* info[4]=
     {
-        "[debug]: ","[info]: ","[warn]: ",
+        "[debug]: ","[info]:  ","[warn]:  ",
         "[error]: "
     };
     if (level >= 4) level = 1;
