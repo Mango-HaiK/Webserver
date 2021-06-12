@@ -52,7 +52,6 @@ public:
             }
             m_pool->cv.notify_all();
         }
-        
     }
 
     template<typename F>
