@@ -52,6 +52,7 @@ private:
     
     bool m_isClose;
 
+    /*一个放头一个放内容*/
     int m_iovCnt;
     iovec m_iov[2];
 
