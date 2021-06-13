@@ -124,6 +124,20 @@ WHERE prod_name LIKE '% ton %';
 # '_'-只匹配单个字符
 SELECT prod_id, prod_name
 FROM products
-WHERE prod_name LIKE '_ ton anvil'
+WHERE prod_name LIKE '_ ton anvil';
 
+## 7.使用正则表达式
+# LIKE 和 REGEXP的区别
+# LIKE匹配整个值 而REGEXP匹配子串
 
+# 基本字符匹配 - REGEXP后面跟的是正则表达式
+SELECT prod_name
+FROM products
+WHERE prod_name REGEXP '1000'
+ORDER BY prod_name;
+
+# ‘.’表示匹配单个数字
+SELECT prod_name
+FROM products
+WHERE prod_name REGEXP '.000'
+ORDER BY prod_name;
