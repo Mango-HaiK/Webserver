@@ -118,7 +118,7 @@ bool HttpConnection::process()
     }
     else if(m_request.Parse(m_readBuff))
     {
-        //LOG_DEBUG("%s", m_request.path().c_str());
+        LOG_DEBUG("%s", m_request.path().c_str());
         m_response.Init(g_srcDir, m_request.path(), m_request.IsKeepAlive(), 200);
     }else
     {
@@ -137,4 +137,5 @@ bool HttpConnection::process()
         m_iovCnt = 2;
     }
     LOG_DEBUG("filesize:%d, %d to %d", m_response.FileLen(), m_iovCnt, m_iov[0].iov_len + m_iov[1].iov_len)
+    return true;
 }

@@ -16,9 +16,9 @@ public:
     /*初始化socket*/
     void Init(int, const sockaddr_in&);
 
-    /**/
-    ssize_t Read(int*);
-    
+    /*读数据并将错误码放在saveErrno*/
+    ssize_t Read(int* saveErrno);
+    /*写数据并将错误码放在saveErrno*/
     ssize_t Write(int*);
 
     /*获取该连接的socket描述符*/
