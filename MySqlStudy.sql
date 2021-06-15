@@ -141,3 +141,98 @@ SELECT prod_name
 FROM products
 WHERE prod_name REGEXP '.000'
 ORDER BY prod_name;
+
+# OR 匹配
+SELECT prod_name
+FROM products
+WHERE prod_name REGEXP '1000|2000'
+ORDER BY prod_name;
+
+# 匹配几个字符串之一 - 通过‘[]’指定
+SELECT prod_name
+FROM products
+WHERE prod_name REGEXP '[123] Ton'
+ORDER BY prod_name;
+
+# 匹配范围[0-9]、[a-z]
+SELECT prod_name
+FROM products
+WHERE prod_name REGEXP '[1-5] Ton'
+ORDER BY prod_name;
+
+# 匹配特殊字符，使用\\为前导进行转义
+SELECT vend_name
+FROM vendors
+WHERE vend_name REGEXP '\\.'
+ORDER BY vend_name;
+
+# 匹配字符类
+/* 
+|类|说明|
+|----|----|
+|[:alnum:]|任意字母和数字|
+|[:alpha:]|任意字符|
+|[:blank:]|空格和制表符|
+|[:cntrl:]|ASCII空置字符，0-31和127|
+|[:graph:]|与[::print]相同，但不包括空格|
+|[:digit:]|任意数字|
+|[:lower:]|任意小写字母|
+|[:upper:]|任意大写字母|
+*/
+
+# 匹配多个实例
+/*
+|元字符|说明|
+|:----:|:----:|
+|*|0个或多个匹配|
+|+|1个或多个匹配(等同于{1,})|
+|?|{0个或1个匹配(等同于{0,1})|
+|{n}|指定数目的匹配|
+|{n,}|不少于指定数目的匹配|
+|{n,m}|匹配数目的范围(m不超过255)|
+*/;
+SELECT prod_name
+FROM products
+WHERE prod_name REGEXP '[:digit:]{4}'
+ORDER BY prod_name;
+
+# 定位符，匹配特殊位置的文本
+/*
+|元字符|说明|
+|:----:|:----:|
+|^|文本的开始|
+|$|文本的结尾|
+|[[:<:]]|词的开始|
+|[[:>:]]|词的结尾|
+*/
+SELECT prod_name
+FROM products
+WHERE prod_name REGEXP '^[0-9\\.]'
+ORDER BY prod_name;
+
+## 8.创建计算字段
+# 拼接字段-Concat()
+SELECT CONCAT(vend_name,'(',vend_country,')')
+FROM vendors
+ORDER BY vend_name;
+
+# 去掉空格Trim、RTrim、LTrim
+SELECT CONCAT(RTrim(vend_name),'(',RTrim(vend_country),')')
+FROM vendors
+ORDER BY vend_name;
+
+# 使用别名-AS
+SELECT CONCAT(RTrim(vend_name),'(',RTrim(vend_country),')')
+AS vend_title
+FROM vendors
+ORDER BY vend_name;
+
+# 执行算术计算
+SELECT prod_id,
+       quantity,
+       item_price,
+       quantity * item_price AS expanded_price
+FROM orderitems
+WHERE order_num = 20005;
+
+## 9.使用数据处理函数

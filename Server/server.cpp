@@ -192,7 +192,7 @@ void Server::Start()
             {
                 __DealRead(&m_user[fd]);
             }
-            /*事件读入*/
+            /*事件可读*/
             else if (events & EPOLLOUT)
             {
                 __Dealwrite(&m_user[fd]);
