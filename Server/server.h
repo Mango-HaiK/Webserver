@@ -8,6 +8,7 @@
 #include "../Log/log.h"
 #include "../Pool/sqlConnRAII.h"
 #include "../Pool/threadPool.h"
+#include "../Pool/sqlConnPool.h"
 #include "../epoll/epoller.h"
 #include "../Http/httpconnection.h"
 #include "../Timer/timer.h"
@@ -42,7 +43,7 @@ private:
     void __Dealwrite(HttpConnection* client);
     void __DealRead(HttpConnection* client);
 
-    void __SendError(int fd, const* info);
+    void __SendError(int fd, const char* info);
     void __ExtentTime(HttpConnection* client);
     void __CloseConn(HttpConnection* client);
 

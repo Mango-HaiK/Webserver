@@ -1,15 +1,18 @@
 #include "sqlConnPool.h"
 
+SqlConnPool::SqlConnPool() : m_usedConn(0), m_freeConn()
+{
+}
 
 SqlConnPool::~SqlConnPool()
 {
     ClosePool();
 }
 
-SqlConnPool* SqlConnPool::getInstace()
+SqlConnPool& SqlConnPool::getInstace()
 {
     static SqlConnPool connPool;
-    return &connPool;
+    return connPool;
 }
 
 void SqlConnPool::Init(const char* host,const int port,

@@ -1,5 +1,7 @@
 #include "server.h"
 
+#define DEBUG(str) std::cout<<(str)<<std::endl
+
 Server::Server(
         int port, int trigMode, int timeoutMS, bool isWaitClose,
         int sqlPort,const char* sqlUser,const char* sqlpwd,
@@ -10,13 +12,13 @@ Server::Server(
         m_epoller(new Epoller())
 {
     //获取当前工作目录
-    getcwd(m_srcDir, 256);
+    m_srcDir = getcwd(nullptr, 256);
     assert(m_srcDir);
     strncat(m_srcDir, "/resources/", 16);
     HttpConnection::g_userCount = 0;
     HttpConnection::g_srcDir = m_srcDir;
-    SqlConnPool::getInstace()->Init(DATABASEIP,sqlPort,sqlUser,
-                                 sqlpwd, dbName, connPoonum);
+    SqlConnPool::getInstace().Init(DATABASEIP,sqlPort,sqlUser,
+                                sqlpwd, dbName, connPoonum);
 
     __InitEventMode(trigMode);
 
@@ -47,7 +49,10 @@ Server::Server(
 
 Server::~Server()
 {
-
+    close(m_listenFd);
+    m_isClose = true;
+    free(m_srcDir);
+    SqlConnPool::getInstace().ClosePool();
 }
 
 void Server::__InitEventMode(int trigMode)
@@ -175,6 +180,7 @@ void Server::Start()
         int eventCnt = m_epoller->Wait(timeMS);
         for (int i = 0; i < eventCnt; i++)
         {
+            std::cout<<eventCnt<<std::endl;
             /*获取事件并分别对事件进行处理*/
             int fd = m_epoller->GetEventFd(i);
             uint32_t events = m_epoller->GetEvents(i);
@@ -219,7 +225,7 @@ void Server::__SendError(int fd, const char* info)
 void Server::__CloseConn(HttpConnection* client)
 {
     assert(client);
-    LOG_INFO("Client[%d] quit!", client->GetFd);
+    LOG_INFO("Client[%d] quit!", client->GetFd());
     m_epoller->DelFd(client->GetFd());
     client->Close();
 }
@@ -330,5 +336,5 @@ void Server::__OnWrite(HttpConnection* client)
 void Server::__Dealwrite(HttpConnection* client)
 {
     assert(client);
-    m_threadpool->AddTask(std::bind(&Server::__OnWrite, this,client);
+    m_threadpool->AddTask(std::bind(&Server::__OnWrite, this,client));
 }

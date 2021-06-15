@@ -29,11 +29,11 @@ void HttpConnection::Init(int fd, const sockaddr_in& addr)
             m_fd,GetIP(), GetPort(), static_cast<int>(g_userCount));
 }
 
-inline int HttpConnection::ToWriteBytes() {
+int HttpConnection::ToWriteBytes() {
     return m_iov[0].iov_len + m_iov[1].iov_len;
 }
 
-inline bool HttpConnection::IsKeepAlive() const
+bool HttpConnection::IsKeepAlive() const
 {
     return m_request.IsKeepAlive();
 }

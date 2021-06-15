@@ -75,6 +75,9 @@
         "bitset": "cpp",
         "complex": "cpp",
         "unordered_set": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "map": "cpp",
+        "future": "cpp",
+        "shared_mutex": "cpp"
     }
 }

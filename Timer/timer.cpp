@@ -37,7 +37,7 @@ bool HeapTimer::__shiftdown(size_t index,size_t n)
     assert(index >= 0 && index < m_heap.size());
     assert(n >= 0 && m_heap.size() >= n);
     size_t i = index;
-    size_t j = index << 1 + 1;
+    size_t j = (index << 1) + 1;
     //存在该子节点
     while (j < n)
     {

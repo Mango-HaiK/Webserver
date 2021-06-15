@@ -7,6 +7,7 @@
 #include <cstring>  
 #include <vector>
 #include <atomic>   //atomic
+#include <assert.h>
 
 #define MAX_BUFF_LEN 65535
 

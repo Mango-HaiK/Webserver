@@ -6,14 +6,14 @@
 #include <assert.h>
 #include <mysql/mysql.h>
 #include <semaphore.h>
-#include <../Log/log.h>
+#include "../Log/log.h"
 
 class SqlConnPool
 {
 public:
     //单例
-    static SqlConnPool* getInstace();
-    
+    static SqlConnPool& getInstace();
+
     //初始化
     void Init(const char* host,const int port,
                 const char* username, const char* password,

@@ -245,5 +245,5 @@ string HttpRequest::GetPost(const char* key) const
 
 bool HttpRequest::UserVerify(const string& user,const string& pwd, bool isLogin)
 {
-    
+    return false;
 }

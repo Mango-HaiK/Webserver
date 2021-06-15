@@ -1,5 +1,8 @@
 #include "../Log/log.h"
 #include "threadPool.h"
+
+#include "sqlConnPool.h"
+
 #include <sstream>
 
 void ThreadLogTask(int i, int cnt) {
@@ -23,4 +26,7 @@ void TestThreadPool() {
 
 int main() {
     TestThreadPool();
+    //SqlConnPool::getInstace().Init("127.0.0.1",3306,"root","","TestDB",8);
+    
+
 }
