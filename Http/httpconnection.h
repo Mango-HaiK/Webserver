@@ -33,6 +33,10 @@ public:
     /*获取该连接的地址*/
     sockaddr_in GetAddr() const;
 
+    int ToWriteBytes();
+
+    bool IsKeepAlive() const;
+
     bool process();
 
     void Close();

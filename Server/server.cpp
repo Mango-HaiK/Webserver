@@ -111,7 +111,7 @@ bool Server::__InitSocket()
         return false;
     }
     
-    /*端口复用*/
+    /*IP复用*/
     int optval = 1;
     ret = setsockopt(m_listenFd, SOL_SOCKET,
                      SO_REUSEADDR,(const void*)&optval,sizeof(optval));
@@ -269,13 +269,15 @@ void Server::__ExtentTime(HttpConnection* client)
     }
 }
 
-void Server::OnProcess(HttpConnection* client)
+void Server::__OnProcess(HttpConnection* client)
 {
     if (client->process())
     {
-        
+        m_epoller->ModFd(client->GetFd(), m_connEvent | EPOLLOUT);
+    }else
+    {
+        m_epoller->ModFd(client->GetFd(), m_connEvent | EPOLLIN);
     }
-    
 }
 
 void Server::__OnRead(HttpConnection* client)
@@ -290,7 +292,7 @@ void Server::__OnRead(HttpConnection* client)
         __CloseConn(client);
         return;
     }
-    OnProcess(client);
+    __OnProcess(client);
 }
 
 void Server::__DealRead(HttpConnection* client)
@@ -299,4 +301,34 @@ void Server::__DealRead(HttpConnection* client)
     /*连接还活着，需要重置超时时间*/
     __ExtentTime(client);
     m_threadpool->AddTask(std::bind(&Server::__OnRead,this,client));
+}
+
+void Server::__OnWrite(HttpConnection* client)
+{
+    int ret = -1;
+    int writeErrno = 0;
+    ret = client->Write(&writeErrno);
+    if (client->ToWriteBytes() == 0)
+    {
+        if (client->IsKeepAlive())
+        {
+            __OnProcess(client);
+            return;
+        }
+    }
+    else if (ret < 0)
+    {
+        if (writeErrno == EAGAIN)
+        {
+            m_epoller->ModFd(client->GetFd(), m_connEvent || EPOLLOUT);
+            return;
+        }
+    }
+    __CloseConn(client);
+}
+
+void Server::__Dealwrite(HttpConnection* client)
+{
+    assert(client);
+    m_threadpool->AddTask(std::bind(&Server::__OnWrite, this,client);
 }

@@ -29,6 +29,15 @@ void HttpConnection::Init(int fd, const sockaddr_in& addr)
             m_fd,GetIP(), GetPort(), static_cast<int>(g_userCount));
 }
 
+inline int HttpConnection::ToWriteBytes() {
+    return m_iov[0].iov_len + m_iov[1].iov_len;
+}
+
+inline bool HttpConnection::IsKeepAlive() const
+{
+    return m_request.IsKeepAlive();
+}
+
 int HttpConnection::GetFd() const
 {
     return m_fd;
@@ -116,6 +125,7 @@ bool HttpConnection::process()
     {
         return false;
     }
+    /*匹配成功*/
     else if(m_request.Parse(m_readBuff))
     {
         LOG_DEBUG("%s", m_request.path().c_str());
