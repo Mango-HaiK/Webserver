@@ -125,7 +125,7 @@ void Log::write(int level, const char* format, ...)
     std::unique_lock<std::mutex> locker(m_mutex);
     m_lineCount++;
     int n = snprintf(m_buff.BeginWrite(), 128,"%d-%02d-%02d %02d:%02d:%02d.%06ld",
-                        t->tm_yday + 1990, t->tm_mon + 1, t->tm_mday, t->tm_hour, 
+                        t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, 
                         t->tm_min, t->tm_sec, nowtime.tv_usec);
     m_buff.HasWritten(n);
     __AppendLogLevelTitle(level);

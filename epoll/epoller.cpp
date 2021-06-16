@@ -1,8 +1,8 @@
 #include "epoller.h"
 
-Epoller::Epoller(int maxEvent) : m_epollfd(epoll_create(1024))
+Epoller::Epoller(int maxEvent) : m_epollfd(epoll_create(1024)),m_events(maxEvent)
 {
-    assert(m_epollfd >= 0);
+    assert(m_epollfd >= 0 && m_events.size() > 0) ;
 }
 
 Epoller::~Epoller()
@@ -37,7 +37,7 @@ bool Epoller::DelFd(int fd)
 
 int Epoller::Wait(int timeout)
 {
-   return epoll_wait(m_epollfd,&m_events[0],m_events.size(),timeout); 
+   return epoll_wait(m_epollfd,&m_events[0],static_cast<int>(m_events.size()),timeout); 
 }
 
 epoll_event Epoller::GetEpollEvent(size_t i) const
