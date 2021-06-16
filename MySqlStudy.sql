@@ -236,3 +236,111 @@ FROM orderitems
 WHERE order_num = 20005;
 
 ## 9.使用数据处理函数
+/*常用的文本处理函数
+｜函数｜说明｜
+|----|----|
+|Left()|返回串左边的字符|
+|Length()|返回串的长度|
+|Locate()|找出一个子串|
+|Lower()|将串转换为小写|
+|LTrim()|去掉左边空格|
+|Right()|返回串右边的字符|
+|RTrim()|去掉右边的空格|
+|Soundex()|返回串的SUOUNDEX值(返回类似发音的串)|
+|SubString()|返回字串的字符|
+|Upper()|将串转换为大写|
+*/;
+SELECT vend_name ,Upper(vend_name) AS vend_name_upcase
+FROM vendors
+ORDER BY vend_name;
+
+/*日期和时间处理函数
+|函数|说明|
+|----|----|
+|AddDate()|添加一个日期（天、周）|
+|AddTime()|添加一个时间（时、分）|
+|CurDate()|返回当前日期|
+|CurTime()|返回当前时间|
+|Date()|返回日期时间的日期部分|
+|DateDiff()|计算两个日期之差|
+|Date_Add()|高度灵活的日期运算函数|
+|Date_Format()|返回一个格式化的时间或日期串|
+|Day()|返回日期的天数部分|
+|DayOfWeek()|返回日期对应的星期几|
+|Hour()|返回时间的小时部分|
+|Minute()|返回时间的分钟部分|
+|Month()|返回日期的月份部分|
+|Now()|返回当前日期和时间|
+|Second()|返回日期的秒部分|
+|Time()|返回日期时间的时间部分|
+|Year()|返回日期的年份部分|
+*/;
+# 应该使用函数提取时间
+SELECT cust_id,order_num
+FROM orders
+WHERE Date(order_date) = '2005-09-01';
+
+# 九月的订单
+SELECT cust_id, order_num
+FROM orders
+WHERE Year(order_date) = 2005 AND Month(order_date) = 9;
+
+/*数值处理函数
+|函数|说明|
+|Abs()|返回一个数的绝对值|
+|Cos()|返回一个角度的余弦|
+|Exp()|返回一个数的指数值|
+|Mod()|返回除操作的余数|
+|Pi()|返回圆周率|
+|Rand()|返回一个随机数|
+|Sin()|返回一个角度的正弦|
+|Sqrt()|返回一个数的平方根|
+|Tan()|返回一个角度的正切|
+*/
+
+## 10.汇总数据
+/*SQL聚集数据
+|函数|说明|
+|----|----|
+|AVG()|返回某列的平均值|
+|COUNT()|返回某列的行数|
+|MAX()|返回某列的最大值|
+|MIN()|返回某列的最小值|
+|SUM()|返回某列之和|
+*/;
+# AVG()
+SELECT AVG(prod_price) AS avg_price
+FROM products;
+
+# COUNT()
+SELECT COUNT(*) AS num_cust
+FROM customers;
+
+# MAX()
+SELECT MAX(prod_price) AS max_price
+FROM products;
+
+# MIN()
+SELECT MIN(prod_price) AS min_price
+FROM products;
+
+# SUM()
+SELECT SUM(quantity) AS items_ordered
+FROM orderitems
+WHERE order_num = 20005;
+
+SELECT SUM(quantity*item_price) AS total_price
+FROM orderitems
+WHERE order_num = 20005;
+
+# 聚集不同的值
+SELECT AVG(DISTINCT prod_price) AS avg_price
+FROM products
+WHERE vend_id = 1003;
+
+# 组合聚集函数
+SELECT COUNT(*) AS num_items,
+        MIN(prod_price) AS price_min,
+        MAX(prod_price) AS price_max,
+        AVG(prod_price) AS price_avg
+FROM products;
