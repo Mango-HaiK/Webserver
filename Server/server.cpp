@@ -70,6 +70,10 @@ void Server::__InitEventMode(int trigMode)
     case 2:
         m_listenEvent |= EPOLLET;
         break;
+    case 3:
+        m_listenEvent |= EPOLLET;
+        m_connEvent |= EPOLLET;
+        break;
     default:
         m_listenEvent |= EPOLLET;
         m_connEvent |= EPOLLET;
@@ -260,7 +264,7 @@ void Server::__DealListen()
             return;
         }
         __AddClient(fd, client_addr);
-    } while (m_listenFd & EPOLLET);
+    } while (m_listenEvent & EPOLLET);
 }
 
 void Server::__ExtentTime(HttpConnection* client)
