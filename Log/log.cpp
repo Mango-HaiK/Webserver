@@ -150,13 +150,23 @@ void Log::write(int level, const char* format, ...)
 
 void Log::__AppendLogLevelTitle(int level)
 {
-    const char* info[4]=
-    {
-        "[debug]: ","[info]:  ","[warn]:  ",
-        "[error]: "
-    };
-    if (level >= 4) level = 1;
-    m_buff.Append(info[level],9);
+    switch(level) {
+    case 0:
+        m_buff.Append("[debug]: ", 9);
+        break;
+    case 1:
+        m_buff.Append("[info] : ", 9);
+        break;
+    case 2:
+        m_buff.Append("[warn] : ", 9);
+        break;
+    case 3:
+        m_buff.Append("[error]: ", 9);
+        break;
+    default:
+        m_buff.Append("[info] : ", 9);
+        break;
+    }
 }
 
 void Log::flush()

@@ -189,8 +189,8 @@ bool Blockdeque<T>::pop(T &item,int timeout)
         int ret = m_Consumer.wait_for(locker,
                         std::chrono::seconds(timeout)) == std::cv_status::timeout;
         //如果超过等待时间返回
-        if (ret || isclose)
-            return false;
+        if (ret) return false;
+        if(isclose) return false;
     }
     m_deque.front(item);
     m_deque.pop_front(item);

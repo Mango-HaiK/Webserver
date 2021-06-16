@@ -40,7 +40,8 @@ public:
             ).detach();
         }
     }
-
+    ThreadPool() = default;
+    ThreadPool(ThreadPool&&) = default;
     ~ThreadPool()
     {
         //m_pool肯定是存在的，但是未必有数据

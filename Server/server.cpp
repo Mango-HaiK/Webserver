@@ -1,7 +1,5 @@
 #include "server.h"
 
-#define DEBUG(str) std::cout<<(str)<<std::endl
-
 Server::Server(
         int port, int trigMode, int timeoutMS, bool isWaitClose,
         int sqlPort,const char* sqlUser,const char* sqlpwd,
@@ -109,7 +107,7 @@ bool Server::__InitSocket()
     /*设置socketFd的选项为如果有数据未完成发送则等待处理结束*/
     ret = setsockopt(m_listenFd, SOL_SOCKET,
                     SO_LINGER,(const void*)&optLinger,sizeof(optLinger));
-    if (ret == -1)
+    if (ret < 0)
     {
         close(m_listenFd);
         LOG_ERROR("Init linger error!");
@@ -120,7 +118,7 @@ bool Server::__InitSocket()
     int optval = 1;
     ret = setsockopt(m_listenFd, SOL_SOCKET,
                      SO_REUSEADDR,(const void*)&optval,sizeof(optval));
-    if (ret < 0)
+    if (ret == -1)
     {
         LOG_ERROR("set socket SO_REUSEADDR error!");
         close(m_listenFd);
@@ -135,7 +133,7 @@ bool Server::__InitSocket()
         return false;
     }
 
-    ret = listen(m_listenFd, 10);
+    ret = listen(m_listenFd, 6);
     if (ret < 0)
     {
         LOG_ERROR("listen port: %d error!",m_port);
@@ -144,7 +142,7 @@ bool Server::__InitSocket()
     }
     
     ret = m_epoller->AddFd(m_listenFd, m_listenEvent | EPOLLIN);
-    if (!ret)
+    if (ret == 0)
     {
         LOG_ERROR("Add listen error!");
         close(m_listenFd);
@@ -180,7 +178,6 @@ void Server::Start()
         int eventCnt = m_epoller->Wait(timeMS);
         for (int i = 0; i < eventCnt; i++)
         {
-            std::cout<<eventCnt<<std::endl;
             /*获取事件并分别对事件进行处理*/
             int fd = m_epoller->GetEventFd(i);
             uint32_t events = m_epoller->GetEvents(i);
