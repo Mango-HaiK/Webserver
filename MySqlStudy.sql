@@ -344,3 +344,73 @@ SELECT COUNT(*) AS num_items,
         MAX(prod_price) AS price_max,
         AVG(prod_price) AS price_avg
 FROM products;
+
+## 11.分组数据
+# GROUP BY 必须在WHERE子句之后，ORDER BY子句之前
+# WHERE分组前进行过滤，而HAVING在分组后过滤，二者的操作符一样
+
+# 创建分组
+SELECT vend_id, COUNT(*) AS num_prods
+FROM products
+WHERE vend_id
+GROUP BY vend_id;
+
+# 过滤分组 
+SELECT cust_id, COUNT(*) AS orders
+FROM orders
+GROUP BY cust_id
+HAVING COUNT(*) >= 2;
+
+# 先筛选掉价格大于10的，再列出数目大于2的
+SELECT vend_id, COUNT(*) AS num_prods
+FROM products
+WHERE prod_price >= 10
+GROUP BY vend_id
+HAVING COUNT(*) >= 2;
+
+SELECT order_num, SUM(quantity * item_price) AS ordertotal
+FROM orderitems
+GROUP BY order_num
+HAVING SUM(quantity * item_price) >= 50
+ORDER BY ordertotal;
+
+## 12.子查询
+SELECT cust_id
+FROM orders
+WHERE order_num IN (SELECT order_num
+                    FROM orderitems
+                    WHERE prod_id = 'TNT2');
+
+SELECT cust_name, cust_contact
+FROM customers
+WHERE cust_id IN (SELECT cust_id
+                  FROM orders
+                  WHERE order_num IN (SELECT order_num
+                                      FROM orderitems
+                                      WHERE prod_id = 'TNT2'));
+
+## 13.联结表
+# 加上需要查找的表就行了
+SELECT vend_name, prod_name, prod_price
+FROM vendors, products
+WHERE vendors.vend_id = products.vend_id
+ORDER BY vend_name, prod_name;
+
+# 没有联结关系将返回笛卡尔积（两个表第行数相乘）
+SELECT vend_name, prod_name, prod_price
+FROM vendors, products
+ORDER BY vend_name, prod_name;
+
+# 联结多个表
+---联结的表越多性能越低
+SELECT prod_name, vend_name, prod_price, quantity
+FROM orderitems, products, vendors
+WHERE products.vend_id = vendors.vend_id
+  AND orderitems.prod_id = products.prod_id
+  AND order_num = 20005;
+
+SELECT cust_name, cust_contact
+FROM customers, orders, orderitems
+WHERE customers.cust_id = orders.cust_id
+  AND orderitems.order_num = orders.order_num
+  AND prod_id = 'TNT2';
